@@ -29,13 +29,13 @@
       <input type="text" id="representative" placeholder="اسم المندوب" required>
       <input type="text" id="phone" placeholder="رقم العميل" required>
       <input type="number" id="price" placeholder="سعر الشحنة" required>
-      <select id="status">
-        <option value="جاري">جاري</option>
-        <option value="مستلمة">مستلمة</option>
-        <option value="اتأجلت">اتأجلت</option>
-        <option value="اتلغت">اتلغت</option>
+      <select id="status" required>
+        <option value="">-- الحالة --</option>
+        <option value="تم التسليم">تم التسليم</option>
+        <option value="مؤجل">مؤجل</option>
+        <option value="ملغي">ملغي</option>
       </select>
-      <input type="text" id="note" placeholder="ملحوظة (دفع/ع التاجر)">
+      <input type="text" id="note" placeholder="الملحوظة (دفع شحن / على التاجر)" required>
       <button type="submit">تسجيل وطباعة</button>
     </form>
 
@@ -60,8 +60,7 @@
           <th>الحالة</th>
           <th>الملحوظة</th>
           <th>التاريخ</th>
-          <th>طباعة بوليصة</th>
-          <th>حذف</th>
+          <th>الخيارات</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -69,6 +68,5 @@
   </div>
 
   <script src="script.js"></script>
-</body>
-                            </html>
-                            
+        </body>
+        
