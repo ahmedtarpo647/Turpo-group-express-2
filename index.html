@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>نظام الشحن</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="login-container">
+    <h2>تسجيل الدخول</h2>
+    <input type="text" id="username" placeholder="اسم المستخدم">
+    <input type="password" id="password" placeholder="كلمة المرور">
+    <button onclick="login()">دخول</button>
+  </div>
+
+  <div id="main-container" style="display:none">
+    <div class="header">
+      <img src="logo.png" alt="الشعار" class="logo">
+      <button onclick="logout()">تسجيل الخروج</button>
+    </div>
+
+    <h2>إضافة شحنة</h2>
+    <form id="shipping-form">
+      <input type="text" id="customer-name" placeholder="اسم العميل" required>
+      <input type="text" id="address" placeholder="العنوان" required>
+      <input type="text" id="city" placeholder="المدينة" required>
+      <input type="text" id="tracking-number" placeholder="رقم التتبع" required>
+      <input type="text" id="shipping-company" placeholder="شركة الشحن" required>
+      <input type="text" id="representative" placeholder="اسم المندوب" required>
+      <input type="text" id="phone" placeholder="رقم العميل" required>
+      <input type="number" id="price" placeholder="سعر الشحنة" required>
+      <button type="submit">تسجيل وطباعة</button>
+    </form>
+
+    <div class="controls">
+      <input type="text" id="search-box" placeholder="بحث بالاسم...">
+      <select id="filter-company"></select>
+      <button id="export-btn">تصدير CSV</button>
+      <button id="print-btn">طباعة</button>
+    </div>
+
+    <table id="shipment-table">
+      <thead>
+        <tr>
+          <th>الاسم</th>
+          <th>العنوان</th>
+          <th>المدينة</th>
+          <th>رقم التتبع</th>
+          <th>شركة الشحن</th>
+          <th>المندوب</th>
+          <th>رقم العميل</th>
+          <th>السعر</th>
+          <th>التاريخ</th>
+          <th>حذف</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+        </html>
+        
