@@ -2,74 +2,41 @@ body {
   font-family: Arial, sans-serif;
   direction: rtl;
   margin: 20px;
-  background-color: #f9f9f9;
-}
-
-h2 {
-  color: #333;
+  background-color: #f4f4f4;
 }
 
 input, select, button {
-  margin: 5px 0;
-  padding: 10px;
-  width: 100%;
-  max-width: 400px;
-  display: block;
-  box-sizing: border-box;
-}
-
-button {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #45a049;
+  margin: 5px;
+  padding: 8px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  background-color: white;
 }
 
 th, td {
+  border: 1px solid #ccc;
   padding: 10px;
-  border: 1px solid #ddd;
   text-align: center;
 }
 
-th {
-  background-color: #f2f2f2;
-}
-
-#login-container {
-  max-width: 400px;
+#login-container, #main-container {
+  max-width: 800px;
   margin: auto;
-  text-align: center;
-}
-
-#main-container {
-  display: none;
-}
-
-.controls {
-  margin-top: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.logo {
-  max-height: 80px;
-  margin-bottom: 20px;
 }
 
 .header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
+  align-items: center;
+}
+
+.logo {
+  height: 60px;
+}
+
+button {
+  cursor: pointer;
 }
