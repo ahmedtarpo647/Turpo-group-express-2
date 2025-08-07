@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
         <td>${shipment.date}</td>
         <td>
           <button onclick="editShipment(${index})">تعديل</button>
+          <button onclick="printWaybill(${index})">بوليصة</button>
           <button onclick="deleteShipment(${index})">حذف</button>
-          <button onclick="printInvoice(${index})">بوليصة</button>
         </td>
       `;
       tableBody.appendChild(tr);
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    const newShipment = {
+    const shipment = {
       name: document.getElementById("customer-name").value,
       address: document.getElementById("address").value,
       city: document.getElementById("city").value,
@@ -63,76 +63,61 @@ document.addEventListener("DOMContentLoaded", function () {
       note: document.getElementById("note").value,
       date: new Date().toLocaleDateString()
     };
-    shipments.push(newShipment);
+    shipments.push(shipment);
     localStorage.setItem("shipments", JSON.stringify(shipments));
     form.reset();
     loadShipments();
   });
 
-  window.deleteShipment = function(index) {
+  window.editShipment = function (index) {
     const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    if (confirm("هل أنت متأكد من حذف هذه الشحنة؟")) {
-      shipments.splice(index, 1);
-      localStorage.setItem("shipments", JSON.stringify(shipments));
-      loadShipments();
-    }
-  };
-
-  window.editShipment = function(index) {
-    const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    const s = shipments[index];
-    document.getElementById("customer-name").value = s.name;
-    document.getElementById("address").value = s.address;
-    document.getElementById("city").value = s.city;
-    document.getElementById("tracking-number").value = s.tracking;
-    document.getElementById("shipping-company").value = s.company;
-    document.getElementById("representative").value = s.representative;
-    document.getElementById("phone").value = s.phone;
-    document.getElementById("price").value = s.price;
-    document.getElementById("status").value = s.status;
-    document.getElementById("note").value = s.note;
+    const shipment = shipments[index];
+    document.getElementById("customer-name").value = shipment.name;
+    document.getElementById("address").value = shipment.address;
+    document.getElementById("city").value = shipment.city;
+    document.getElementById("tracking-number").value = shipment.tracking;
+    document.getElementById("shipping-company").value = shipment.company;
+    document.getElementById("representative").value = shipment.representative;
+    document.getElementById("phone").value = shipment.phone;
+    document.getElementById("price").value = shipment.price;
+    document.getElementById("status").value = shipment.status;
+    document.getElementById("note").value = shipment.note;
 
     shipments.splice(index, 1);
     localStorage.setItem("shipments", JSON.stringify(shipments));
     loadShipments();
   };
 
-  window.printInvoice = function(index) {
+  window.deleteShipment = function(index) {
+    const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
+    if (confirm("هل أنت متأكد من حذف الشحنة؟")) {
+      shipments.splice(index, 1);
+      localStorage.setItem("shipments", JSON.stringify(shipments));
+      loadShipments();
+    }
+  };
+
+  window.printWaybill = function(index) {
     const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
     const s = shipments[index];
-    const invoice = `
-      <html>
-      <head>
-        <title>بوليصة الشحن</title>
-        <style>
-          body { font-family: Arial; direction: rtl; padding: 20px; }
-          h2 { text-align: center; }
-          table { width: 100%; margin-top: 20px; border-collapse: collapse; }
-          td, th { padding: 10px; border: 1px solid #000; }
-        </style>
-      </head>
-      <body>
-        <h2>بوليصة الشحن</h2>
-        <table>
-          <tr><th>العميل</th><td>${s.name}</td></tr>
-          <tr><th>العنوان</th><td>${s.address}</td></tr>
-          <tr><th>المدينة</th><td>${s.city}</td></tr>
-          <tr><th>رقم التتبع</th><td>${s.tracking}</td></tr>
-          <tr><th>الشركة</th><td>${s.company}</td></tr>
-          <tr><th>المندوب</th><td>${s.representative}</td></tr>
-          <tr><th>رقم العميل</th><td>${s.phone}</td></tr>
-          <tr><th>السعر</th><td>${s.price}</td></tr>
-          <tr><th>الحالة</th><td>${s.status}</td></tr>
-          <tr><th>الملحوظة</th><td>${s.note}</td></tr>
-          <tr><th>التاريخ</th><td>${s.date}</td></tr>
-        </table>
-      </body>
-      </html>
+    const waybillContent = `
+      <h2>بوليصة شحنة</h2>
+      <p><strong>الاسم:</strong> ${s.name}</p>
+      <p><strong>العنوان:</strong> ${s.address}</p>
+      <p><strong>المدينة:</strong> ${s.city}</p>
+      <p><strong>رقم التتبع:</strong> ${s.tracking}</p>
+      <p><strong>شركة الشحن:</strong> ${s.company}</p>
+      <p><strong>المندوب:</strong> ${s.representative}</p>
+      <p><strong>رقم العميل:</strong> ${s.phone}</p>
+      <p><strong>السعر:</strong> ${s.price} جنيه</p>
+      <p><strong>الحالة:</strong> ${s.status}</p>
+      <p><strong>الملحوظة:</strong> ${s.note}</p>
+      <p><strong>تاريخ:</strong> ${s.date}</p>
     `;
-    const w = window.open();
-    w.document.write(invoice);
-    w.print();
-    w.close();
+    const newWindow = window.open("", "_blank");
+    newWindow.document.write(`<html><body>${waybillContent}</body></html>`);
+    newWindow.document.close();
+    newWindow.print();
   };
 
   searchBox.addEventListener("input", function () {
@@ -150,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   exportBtn.addEventListener("click", function () {
-    const rows = [["Name", "Address", "City", "Tracking", "Company", "Rep", "Phone", "Price", "Status", "Note", "Date"]];
+    const rows = [["الاسم", "العنوان", "المدينة", "رقم التتبع", "الشركة", "المندوب", "رقم العميل", "السعر", "الحالة", "الملحوظة", "التاريخ"]];
     const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
     shipments.forEach(s => {
       rows.push([s.name, s.address, s.city, s.tracking, s.company, s.representative, s.phone, s.price, s.status, s.note, s.date]);
@@ -182,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
       mainContainer.style.display = "block";
       loadShipments();
     } else {
-      alert("بيانات الدخول غير صحيحة.");
+      alert("بيانات تسجيل الدخول غير صحيحة");
     }
   };
 
