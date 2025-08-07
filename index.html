@@ -29,12 +29,15 @@
       <input type="text" id="representative" placeholder="اسم المندوب" required>
       <input type="text" id="phone" placeholder="رقم العميل" required>
       <input type="number" id="price" placeholder="سعر الشحنة" required>
-      <select id="status" required>
-        <option value="">-- الحالة --</option>
-        <option value="تم التسليم">تم التسليم</option>
-        <option value="مؤجل">مؤجل</option>
-        <option value="ملغي">ملغي</option>
-      </select>
+<select id="status" required>
+  <option value="">-- الحالة --</option>
+  <option value="قيد الشحن">قيد الشحن</option>
+  <option value="قيد الإرجاع">قيد الإرجاع</option>
+  <option value="تم الإرجاع">تم الإرجاع</option>
+  <option value="تم التسليم">تم التسليم</option>
+  <option value="مؤجل">مؤجل</option>
+  <option value="ملغي">ملغي</option>
+</select>
       <input type="text" id="note" placeholder="الملحوظة (دفع شحن / على التاجر)" required>
       <button type="submit">تسجيل وطباعة</button>
     </form>
