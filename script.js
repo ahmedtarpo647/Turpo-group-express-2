@@ -3,12 +3,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const mainContainer = document.getElementById("main-container");
   const usernameInput = document.getElementById("username");
   const passwordInput = document.getElementById("password");
-
   const form = document.getElementById("shipping-form");
   const tableBody = document.querySelector("#shipment-table tbody");
   const searchBox = document.getElementById("search-box");
   const filterCompany = document.getElementById("filter-company");
-
   const exportBtn = document.getElementById("export-btn");
   const printBtn = document.getElementById("print-btn");
 
@@ -59,14 +57,12 @@ document.addEventListener("DOMContentLoaded", function () {
     localStorage.setItem("shipments", JSON.stringify(shipments));
     form.reset();
     loadShipments();
-
-    // طباعة بعد الإضافة
-    setTimeout(() => window.print(), 500);
+    window.print();
   });
 
   window.deleteShipment = function(index) {
     const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    if (confirm("هل أنت متأكد من حذف الشحنة؟")) {
+    if (confirm("هل أنت متأكد أنك تريد حذف هذه الشحنة؟")) {
       shipments.splice(index, 1);
       localStorage.setItem("shipments", JSON.stringify(shipments));
       loadShipments();
@@ -120,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
       mainContainer.style.display = "block";
       loadShipments();
     } else {
-      alert("بيانات الدخول غير صحيحة.");
+      alert("كلمة المرور أو اسم المستخدم غير صحيح");
     }
   };
 
