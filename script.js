@@ -31,11 +31,8 @@ document.addEventListener("DOMContentLoaded", function () {
         <td>${shipment.status}</td>
         <td>${shipment.note}</td>
         <td>${shipment.date}</td>
-        <td>
-          <button onclick="editShipment(${index})">تعديل</button>
-          <button onclick="printWaybill(${index})">بوليصة</button>
-          <button onclick="deleteShipment(${index})">حذف</button>
-        </td>
+        <td><button onclick="deleteShipment(${index})">حذف</button></td>
+        <td><button onclick="printSingle(${index})">طباعة</button></td>
       `;
       tableBody.appendChild(tr);
       companies.add(shipment.company);
@@ -50,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    const shipment = {
+    const newShipment = {
       name: document.getElementById("customer-name").value,
       address: document.getElementById("address").value,
       city: document.getElementById("city").value,
@@ -63,61 +60,19 @@ document.addEventListener("DOMContentLoaded", function () {
       note: document.getElementById("note").value,
       date: new Date().toLocaleDateString()
     };
-    shipments.push(shipment);
+    shipments.push(newShipment);
     localStorage.setItem("shipments", JSON.stringify(shipments));
     form.reset();
     loadShipments();
   });
 
-  window.editShipment = function (index) {
-    const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    const shipment = shipments[index];
-    document.getElementById("customer-name").value = shipment.name;
-    document.getElementById("address").value = shipment.address;
-    document.getElementById("city").value = shipment.city;
-    document.getElementById("tracking-number").value = shipment.tracking;
-    document.getElementById("shipping-company").value = shipment.company;
-    document.getElementById("representative").value = shipment.representative;
-    document.getElementById("phone").value = shipment.phone;
-    document.getElementById("price").value = shipment.price;
-    document.getElementById("status").value = shipment.status;
-    document.getElementById("note").value = shipment.note;
-
-    shipments.splice(index, 1);
-    localStorage.setItem("shipments", JSON.stringify(shipments));
-    loadShipments();
-  };
-
   window.deleteShipment = function(index) {
     const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    if (confirm("هل أنت متأكد من حذف الشحنة؟")) {
+    if (confirm("هل أنت متأكد من الحذف؟")) {
       shipments.splice(index, 1);
       localStorage.setItem("shipments", JSON.stringify(shipments));
       loadShipments();
     }
-  };
-
-  window.printWaybill = function(index) {
-    const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    const s = shipments[index];
-    const waybillContent = `
-      <h2>بوليصة شحنة</h2>
-      <p><strong>الاسم:</strong> ${s.name}</p>
-      <p><strong>العنوان:</strong> ${s.address}</p>
-      <p><strong>المدينة:</strong> ${s.city}</p>
-      <p><strong>رقم التتبع:</strong> ${s.tracking}</p>
-      <p><strong>شركة الشحن:</strong> ${s.company}</p>
-      <p><strong>المندوب:</strong> ${s.representative}</p>
-      <p><strong>رقم العميل:</strong> ${s.phone}</p>
-      <p><strong>السعر:</strong> ${s.price} جنيه</p>
-      <p><strong>الحالة:</strong> ${s.status}</p>
-      <p><strong>الملحوظة:</strong> ${s.note}</p>
-      <p><strong>تاريخ:</strong> ${s.date}</p>
-    `;
-    const newWindow = window.open("", "_blank");
-    newWindow.document.write(`<html><body>${waybillContent}</body></html>`);
-    newWindow.document.close();
-    newWindow.print();
   };
 
   searchBox.addEventListener("input", function () {
@@ -151,13 +106,36 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   printBtn.addEventListener("click", function () {
-    const original = document.body.innerHTML;
-    const content = document.querySelector("#main-container").innerHTML;
-    document.body.innerHTML = content;
-    window.print();
-    document.body.innerHTML = original;
-    location.reload();
+    const content = document.querySelector("#shipment-table").outerHTML;
+    const win = window.open("", "", "width=900,height=700");
+    win.document.write("<html><head><title>طباعة الكل</title></head><body>");
+    win.document.write(content);
+    win.document.write("</body></html>");
+    win.document.close();
+    win.print();
   });
+
+  window.printSingle = function(index) {
+    const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
+    const s = shipments[index];
+    const win = window.open("", "", "width=900,height=600");
+    win.document.write("<html><head><title>بوليصة الشحنة</title></head><body>");
+    win.document.write(`<h2>بوليصة شحن</h2>
+      <p><strong>الاسم:</strong> ${s.name}</p>
+      <p><strong>العنوان:</strong> ${s.address}</p>
+      <p><strong>المدينة:</strong> ${s.city}</p>
+      <p><strong>رقم التتبع:</strong> ${s.tracking}</p>
+      <p><strong>شركة الشحن:</strong> ${s.company}</p>
+      <p><strong>المندوب:</strong> ${s.representative}</p>
+      <p><strong>رقم العميل:</strong> ${s.phone}</p>
+      <p><strong>السعر:</strong> ${s.price}</p>
+      <p><strong>الحالة:</strong> ${s.status}</p>
+      <p><strong>الملحوظة:</strong> ${s.note}</p>
+      <p><strong>التاريخ:</strong> ${s.date}</p>`);
+    win.document.write("</body></html>");
+    win.document.close();
+    win.print();
+  };
 
   window.login = function () {
     const username = usernameInput.value;
@@ -167,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
       mainContainer.style.display = "block";
       loadShipments();
     } else {
-      alert("بيانات تسجيل الدخول غير صحيحة");
+      alert("بيانات الدخول غير صحيحة.");
     }
   };
 
