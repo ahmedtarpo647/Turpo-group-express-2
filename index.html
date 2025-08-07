@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+DOCTYPE html>
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
@@ -29,16 +29,19 @@
       <input type="text" id="representative" placeholder="اسم المندوب" required>
       <input type="text" id="phone" placeholder="رقم العميل" required>
       <input type="number" id="price" placeholder="سعر الشحنة" required>
-<select id="status" required>
-  <option value="">-- الحالة --</option>
-  <option value="قيد الشحن">قيد الشحن</option>
-  <option value="قيد الإرجاع">قيد الإرجاع</option>
-  <option value="تم الإرجاع">تم الإرجاع</option>
-  <option value="تم التسليم">تم التسليم</option>
-  <option value="مؤجل">مؤجل</option>
-  <option value="ملغي">ملغي</option>
-</select>
-      <input type="text" id="note" placeholder="الملحوظة (دفع شحن / على التاجر)" required>
+
+      <select id="status" required>
+        <option value="">-- الحالة --</option>
+        <option value="قيد الشحن">قيد الشحن</option>
+        <option value="قيد الإرجاع">قيد الإرجاع</option>
+        <option value="تم الإرجاع">تم الإرجاع</option>
+        <option value="تم التسليم">تم التسليم</option>
+        <option value="مؤجل">مؤجل</option>
+        <option value="ملغي">ملغي</option>
+      </select>
+
+      <input type="text" id="note" placeholder="ملحوظة (دفع شحن أو على التاجر)">
+      
       <button type="submit">تسجيل وطباعة</button>
     </form>
 
@@ -46,7 +49,7 @@
       <input type="text" id="search-box" placeholder="بحث بالاسم...">
       <select id="filter-company"></select>
       <button id="export-btn">تصدير CSV</button>
-      <button id="print-btn">طباعة</button>
+      <button id="print-btn">طباعة الكل</button>
     </div>
 
     <table id="shipment-table">
@@ -61,9 +64,10 @@
           <th>رقم العميل</th>
           <th>السعر</th>
           <th>الحالة</th>
-          <th>الملحوظة</th>
+          <th>ملحوظة</th>
           <th>التاريخ</th>
-          <th>الخيارات</th>
+          <th>حذف</th>
+          <th>طباعة بوليصة</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -71,5 +75,6 @@
   </div>
 
   <script src="script.js"></script>
-        </body>
-        
+</body>
+        </html>
+  
