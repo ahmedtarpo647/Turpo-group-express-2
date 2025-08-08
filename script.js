@@ -1,129 +1,127 @@
-const loginContainer = document.getElementById("login-container");
-const mainContainer = document.getElementById("main-container");
-const shippingForm = document.getElementById("shipping-form");
-const tableBody = document.querySelector("#shipment-table tbody");
-const searchBox = document.getElementById("search-box");
-const filterCompany = document.getElementById("filter-company");
+let shipments = JSON.parse(localStorage.getItem('shipments')) || [];
 
 function login() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
-  if (username === "admin" && password === "1234") {
-    loginContainer.style.display = "none";
-    mainContainer.style.display = "block";
-    loadShipments();
+  const user = document.getElementById('username').value;
+  const pass = document.getElementById('password').value;
+  if (user === "admin" && pass === "1234") {
+    document.getElementById('login-container').style.display = 'none';
+    document.getElementById('main-container').style.display = 'block';
+    renderTable();
   } else {
-    alert("بيانات الدخول غير صحيحة");
+    alert("خطأ في تسجيل الدخول");
   }
 }
 
 function logout() {
-  mainContainer.style.display = "none";
-  loginContainer.style.display = "block";
+  location.reload();
 }
 
-shippingForm.addEventListener("submit", function(e) {
+document.getElementById('shipping-form').addEventListener('submit', function(e) {
   e.preventDefault();
   const shipment = {
-    name: document.getElementById("customer-name").value,
-    address: document.getElementById("address").value,
-    city: document.getElementById("city").value,
-    tracking: document.getElementById("tracking-number").value,
-    company: document.getElementById("shipping-company").value,
-    representative: document.getElementById("representative").value,
-    phone: document.getElementById("phone").value,
-    price: document.getElementById("price").value,
-    status: "قيد الشحن",
-    payment: "لم يدفع",
+    name: document.getElementById('customer-name').value,
+    address: document.getElementById('address').value,
+    city: document.getElementById('city').value,
+    tracking: document.getElementById('tracking-number').value,
+    company: document.getElementById('shipping-company').value,
+    rep: document.getElementById('representative').value,
+    phone: document.getElementById('phone').value,
+    price: document.getElementById('price').value,
+    status: document.getElementById('status').value,
+    note: document.getElementById('note').value,
     date: new Date().toLocaleString()
   };
-
-  const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
   shipments.push(shipment);
-  localStorage.setItem("shipments", JSON.stringify(shipments));
-
-  shippingForm.reset();
-  loadShipments();
+  localStorage.setItem('shipments', JSON.stringify(shipments));
+  renderTable();
+  this.reset();
 });
 
-function loadShipments() {
-  const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-  tableBody.innerHTML = "";
-  const companies = new Set();
-
-  shipments.forEach((shipment, index) => {
-    const tr = document.createElement("tr");
+function renderTable() {
+  const tbody = document.querySelector('#shipment-table tbody');
+  tbody.innerHTML = "";
+  shipments.forEach((s, i) => {
+    const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${shipment.name}</td>
-      <td>${shipment.address}</td>
-      <td>${shipment.city}</td>
-      <td>${shipment.tracking}</td>
-      <td>${shipment.company}</td>
-      <td>${shipment.representative}</td>
-      <td>${shipment.phone}</td>
-      <td>${shipment.price}</td>
+      <td>${s.name}</td>
+      <td>${s.address}</td>
+      <td>${s.city}</td>
+      <td>${s.tracking}</td>
+      <td>${s.company}</td>
+      <td>${s.rep}</td>
+      <td>${s.phone}</td>
+      <td>${s.price}</td>
       <td>
-        <select class="status-select" data-index="${index}">
-          <option value="قيد الشحن" ${shipment.status === "قيد الشحن" ? "selected" : ""}>قيد الشحن</option>
-          <option value="قيد الإرجاع" ${shipment.status === "قيد الإرجاع" ? "selected" : ""}>قيد الإرجاع</option>
-          <option value="تم الإرجاع" ${shipment.status === "تم الإرجاع" ? "selected" : ""}>تم الإرجاع</option>
-          <option value="استلمت" ${shipment.status === "استلمت" ? "selected" : ""}>استلمت</option>
-          <option value="اتأجلت" ${shipment.status === "اتأجلت" ? "selected" : ""}>اتأجلت</option>
-          <option value="اتلغت" ${shipment.status === "اتلغت" ? "selected" : ""}>اتلغت</option>
+        <select onchange="updateStatus(${i}, this.value)">
+          <option ${s.status==="قيد الشحن"?"selected":""}>قيد الشحن</option>
+          <option ${s.status==="استلم"?"selected":""}>استلم</option>
+          <option ${s.status==="تم الإلغاء"?"selected":""}>تم الإلغاء</option>
+          <option ${s.status==="قيد الإرجاع"?"selected":""}>قيد الإرجاع</option>
+          <option ${s.status==="تم الإرجاع"?"selected":""}>تم الإرجاع</option>
         </select>
       </td>
-      <td>
-        <select class="payment-select" data-index="${index}">
-          <option value="لم يدفع" ${shipment.payment === "لم يدفع" ? "selected" : ""}>لم يدفع</option>
-          <option value="دفع" ${shipment.payment === "دفع" ? "selected" : ""}>دفع</option>
-        </select>
-      </td>
-      <td>${shipment.date}</td>
-      <td><button onclick="deleteShipment(${index})">حذف</button></td>
+      <td><input value="${s.note}" onchange="updateNote(${i}, this.value)"></td>
+      <td>${s.date}</td>
+      <td><button onclick="editShipment(${i})">تعديل</button></td>
+      <td><button onclick="printBill(${i})">طباعة</button></td>
+      <td><button onclick="deleteShipment(${i})">حذف</button></td>
     `;
-    tableBody.appendChild(tr);
-    companies.add(shipment.company);
+    tbody.appendChild(tr);
   });
+}
 
-  document.querySelectorAll(".status-select").forEach(select => {
-    select.addEventListener("change", function() {
-      const index = this.getAttribute("data-index");
-      shipments[index].status = this.value;
-      localStorage.setItem("shipments", JSON.stringify(shipments));
-    });
-  });
+function updateStatus(index, val) {
+  shipments[index].status = val;
+  localStorage.setItem('shipments', JSON.stringify(shipments));
+}
 
-  document.querySelectorAll(".payment-select").forEach(select => {
-    select.addEventListener("change", function() {
-      const index = this.getAttribute("data-index");
-      shipments[index].payment = this.value;
-      localStorage.setItem("shipments", JSON.stringify(shipments));
-    });
-  });
-
-  filterCompany.innerHTML = '<option value="">كل الشركات</option>';
-  companies.forEach(company => {
-    filterCompany.innerHTML += `<option value="${company}">${company}</option>`;
-  });
+function updateNote(index, val) {
+  shipments[index].note = val;
+  localStorage.setItem('shipments', JSON.stringify(shipments));
 }
 
 function deleteShipment(index) {
-  const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-  shipments.splice(index, 1);
-  localStorage.setItem("shipments", JSON.stringify(shipments));
-  loadShipments();
+  if (confirm("حذف الشحنة؟")) {
+    shipments.splice(index, 1);
+    localStorage.setItem('shipments', JSON.stringify(shipments));
+    renderTable();
+  }
 }
 
-searchBox.addEventListener("input", function() {
-  const term = this.value.toLowerCase();
-  document.querySelectorAll("#shipment-table tbody tr").forEach(row => {
-    row.style.display = row.innerText.toLowerCase().includes(term) ? "" : "none";
-  });
-});
-
-filterCompany.addEventListener("change", function() {
-  const company = this.value;
-  document.querySelectorAll("#shipment-table tbody tr").forEach(row => {
-    row.style.display = company === "" || row.cells[4].innerText === company ? "" : "none";
-  });
-});
+function printBill(index) {
+  const s = shipments[index];
+  const w = window.open('', '', 'width=800,height=600');
+  w.document.write(`
+    <html dir="rtl">
+    <head>
+      <title>بوليصة شحن</title>
+      <style>
+        body { font-family: Arial; }
+        .logo { height: 80px; }
+        h1 { text-align:center; }
+        table { width:100%; border-collapse: collapse; }
+        td, th { border: 1px solid #000; padding: 8px; }
+      </style>
+    </head>
+    <body>
+      <h1>تربو جروب اكسبريس</h1>
+      <img src="logo.png" class="logo">
+      <table>
+        <tr><th>اسم العميل</th><td>${s.name}</td></tr>
+        <tr><th>العنوان</th><td>${s.address}</td></tr>
+        <tr><th>المدينة</th><td>${s.city}</td></tr>
+        <tr><th>رقم التتبع</th><td>${s.tracking}</td></tr>
+        <tr><th>شركة الشحن</th><td>${s.company}</td></tr>
+        <tr><th>المندوب</th><td>${s.rep}</td></tr>
+        <tr><th>رقم العميل</th><td>${s.phone}</td></tr>
+        <tr><th>سعر الشحنة</th><td>${s.price}</td></tr>
+        <tr><th>الحالة</th><td>${s.status}</td></tr>
+        <tr><th>ملاحظات</th><td>${s.note}</td></tr>
+        <tr><th>التاريخ</th><td>${s.date}</td></tr>
+      </table>
+      <script>window.print();</script>
+    </body>
+    </html>
+  `);
+  w.document.close();
+}
