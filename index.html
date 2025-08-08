@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>نظام الشحن</title>
+  <title>نظام الشحن - تربو جروب اكسبريس</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -15,7 +15,8 @@
 
   <div id="main-container" style="display:none">
     <div class="header">
-      <img src="logo.png" alt="الشعار" class="logo">
+      <img src="https://i.ibb.co/ymKWj4yG/logo.png" alt="الشعار" class="logo">
+      <h1>تربو جروب اكسبريس</h1>
       <button onclick="logout()">تسجيل الخروج</button>
     </div>
 
@@ -31,19 +32,21 @@
       <input type="number" id="price" placeholder="سعر الشحنة" required>
       <select id="status">
         <option value="قيد الشحن">قيد الشحن</option>
-        <option value="استلم">استلم</option>
-        <option value="تم الإلغاء">تم الإلغاء</option>
         <option value="قيد الإرجاع">قيد الإرجاع</option>
         <option value="تم الإرجاع">تم الإرجاع</option>
+        <option value="استلم">استلم</option>
+        <option value="تأجل">تأجل</option>
+        <option value="اتلغت">اتلغت</option>
       </select>
-      <input type="text" id="note" placeholder="ملاحظات (دفع شحن / علي التاجر)">
-      <button type="submit">تسجيل</button>
+      <input type="text" id="note" placeholder="ملحوظة (دفع شحن/على التاجر)">
+      <button type="submit">تسجيل وطباعة</button>
     </form>
 
     <div class="controls">
       <input type="text" id="search-box" placeholder="بحث بالاسم...">
       <select id="filter-company"></select>
       <button id="export-btn">تصدير CSV</button>
+      <button id="print-btn">طباعة</button>
     </div>
 
     <table id="shipment-table">
@@ -58,10 +61,9 @@
           <th>رقم العميل</th>
           <th>السعر</th>
           <th>الحالة</th>
-          <th>الملاحظات</th>
-          <th>تاريخ</th>
+          <th>الملحوظة</th>
+          <th>التاريخ</th>
           <th>تعديل</th>
-          <th>طباعة بوليصة</th>
           <th>حذف</th>
         </tr>
       </thead>
