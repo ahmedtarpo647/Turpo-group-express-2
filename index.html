@@ -1,76 +1,62 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>نظام الشحن - تربو جروب اكسبريس</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة الشحن</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="login-container">
-    <h2>تسجيل الدخول</h2>
-    <input type="text" id="username" placeholder="اسم المستخدم">
-    <input type="password" id="password" placeholder="كلمة المرور">
-    <button onclick="login()">دخول</button>
-  </div>
 
-  <div id="main-container" style="display:none">
-    <div class="header">
-      <img src="https://i.ibb.co/ymKWj4yG/logo.png" alt="الشعار" class="logo">
-      <h1>تربو جروب اكسبريس</h1>
-      <button onclick="logout()">تسجيل الخروج</button>
+    <!-- تسجيل الدخول -->
+    <div id="login-container" class="container">
+        <h2>تسجيل الدخول</h2>
+        <input type="text" id="username" placeholder="اسم المستخدم">
+        <input type="password" id="password" placeholder="كلمة المرور">
+        <button onclick="login()">دخول</button>
     </div>
 
-    <h2>إضافة شحنة</h2>
-    <form id="shipping-form">
-      <input type="text" id="customer-name" placeholder="اسم العميل" required>
-      <input type="text" id="address" placeholder="العنوان" required>
-      <input type="text" id="city" placeholder="المدينة" required>
-      <input type="text" id="tracking-number" placeholder="رقم التتبع" required>
-      <input type="text" id="shipping-company" placeholder="شركة الشحن" required>
-      <input type="text" id="representative" placeholder="اسم المندوب" required>
-      <input type="text" id="phone" placeholder="رقم العميل" required>
-      <input type="number" id="price" placeholder="سعر الشحنة" required>
-      <select id="status">
-        <option value="قيد الشحن">قيد الشحن</option>
-        <option value="قيد الإرجاع">قيد الإرجاع</option>
-        <option value="تم الإرجاع">تم الإرجاع</option>
-        <option value="استلم">استلم</option>
-        <option value="تأجل">تأجل</option>
-        <option value="اتلغت">اتلغت</option>
-      </select>
-      <input type="text" id="note" placeholder="ملحوظة (دفع شحن/على التاجر)">
-      <button type="submit">تسجيل وطباعة</button>
-    </form>
+    <!-- النظام -->
+    <div id="main-container" class="container" style="display:none;">
+        <header>
+            <img src="https://i.ibb.co/ymKWj4yG/logo.png" alt="Turbo Group Express" class="logo">
+            <h1>نظام إدارة الشحن</h1>
+            <button onclick="logout()">تسجيل خروج</button>
+        </header>
 
-    <div class="controls">
-      <input type="text" id="search-box" placeholder="بحث بالاسم...">
-      <select id="filter-company"></select>
-      <button id="export-btn">تصدير CSV</button>
-      <button id="print-btn">طباعة</button>
+        <!-- إضافة شحنة -->
+        <form id="shipping-form">
+            <input type="text" id="customer-name" placeholder="اسم العميل" required>
+            <input type="text" id="address" placeholder="العنوان" required>
+            <input type="text" id="city" placeholder="المدينة" required>
+            <input type="text" id="tracking-number" placeholder="رقم التتبع" required>
+            <input type="text" id="shipping-company" placeholder="شركة الشحن" required>
+            <input type="text" id="representative" placeholder="المندوب" required>
+            <input type="tel" id="phone" placeholder="رقم الهاتف" required>
+            <input type="number" id="price" placeholder="السعر" required>
+            <button type="submit">إضافة شحنة</button>
+        </form>
+
+        <!-- عرض الشحنات -->
+        <table id="shipment-table">
+            <thead>
+                <tr>
+                    <th>اسم العميل</th>
+                    <th>العنوان</th>
+                    <th>المدينة</th>
+                    <th>رقم التتبع</th>
+                    <th>شركة الشحن</th>
+                    <th>المندوب</th>
+                    <th>الهاتف</th>
+                    <th>السعر</th>
+                    <th>التاريخ</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
     </div>
 
-    <table id="shipment-table">
-      <thead>
-        <tr>
-          <th>الاسم</th>
-          <th>العنوان</th>
-          <th>المدينة</th>
-          <th>رقم التتبع</th>
-          <th>شركة الشحن</th>
-          <th>المندوب</th>
-          <th>رقم العميل</th>
-          <th>السعر</th>
-          <th>الحالة</th>
-          <th>الملحوظة</th>
-          <th>التاريخ</th>
-          <th>تعديل</th>
-          <th>حذف</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
