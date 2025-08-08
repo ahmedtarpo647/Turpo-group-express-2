@@ -1,156 +1,129 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const loginContainer = document.getElementById("login-container");
-  const mainContainer = document.getElementById("main-container");
-  const usernameInput = document.getElementById("username");
-  const passwordInput = document.getElementById("password");
+const loginContainer = document.getElementById("login-container");
+const mainContainer = document.getElementById("main-container");
+const shippingForm = document.getElementById("shipping-form");
+const tableBody = document.querySelector("#shipment-table tbody");
+const searchBox = document.getElementById("search-box");
+const filterCompany = document.getElementById("filter-company");
 
-  const form = document.getElementById("shipping-form");
-  const tableBody = document.querySelector("#shipment-table tbody");
-  const searchBox = document.getElementById("search-box");
-  const filterCompany = document.getElementById("filter-company");
-
-  const exportBtn = document.getElementById("export-btn");
-  const printBtn = document.getElementById("print-btn");
-
-  function loadShipments() {
-    const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    tableBody.innerHTML = "";
-    const companies = new Set();
-
-    shipments.forEach((shipment, index) => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${shipment.name}</td>
-        <td>${shipment.address}</td>
-        <td>${shipment.city}</td>
-        <td>${shipment.tracking}</td>
-        <td>${shipment.company}</td>
-        <td>${shipment.representative}</td>
-        <td>${shipment.phone}</td>
-        <td>${shipment.price}</td>
-        <td>${shipment.status}</td>
-        <td>${shipment.note}</td>
-        <td>${shipment.date}</td>
-        <td><button onclick="deleteShipment(${index})">حذف</button></td>
-        <td><button onclick="printSingle(${index})">طباعة</button></td>
-      `;
-      tableBody.appendChild(tr);
-      companies.add(shipment.company);
-    });
-
-    filterCompany.innerHTML = '<option value="">كل الشركات</option>';
-    companies.forEach(company => {
-      filterCompany.innerHTML += `<option value="${company}">${company}</option>`;
-    });
-  }
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    const newShipment = {
-      name: document.getElementById("customer-name").value,
-      address: document.getElementById("address").value,
-      city: document.getElementById("city").value,
-      tracking: document.getElementById("tracking-number").value,
-      company: document.getElementById("shipping-company").value,
-      representative: document.getElementById("representative").value,
-      phone: document.getElementById("phone").value,
-      price: document.getElementById("price").value,
-      status: document.getElementById("status").value,
-      note: document.getElementById("note").value,
-      date: new Date().toLocaleDateString()
-    };
-    shipments.push(newShipment);
-    localStorage.setItem("shipments", JSON.stringify(shipments));
-    form.reset();
+function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  if (username === "admin" && password === "1234") {
+    loginContainer.style.display = "none";
+    mainContainer.style.display = "block";
     loadShipments();
+  } else {
+    alert("بيانات الدخول غير صحيحة");
+  }
+}
+
+function logout() {
+  mainContainer.style.display = "none";
+  loginContainer.style.display = "block";
+}
+
+shippingForm.addEventListener("submit", function(e) {
+  e.preventDefault();
+  const shipment = {
+    name: document.getElementById("customer-name").value,
+    address: document.getElementById("address").value,
+    city: document.getElementById("city").value,
+    tracking: document.getElementById("tracking-number").value,
+    company: document.getElementById("shipping-company").value,
+    representative: document.getElementById("representative").value,
+    phone: document.getElementById("phone").value,
+    price: document.getElementById("price").value,
+    status: "قيد الشحن",
+    payment: "لم يدفع",
+    date: new Date().toLocaleString()
+  };
+
+  const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
+  shipments.push(shipment);
+  localStorage.setItem("shipments", JSON.stringify(shipments));
+
+  shippingForm.reset();
+  loadShipments();
+});
+
+function loadShipments() {
+  const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
+  tableBody.innerHTML = "";
+  const companies = new Set();
+
+  shipments.forEach((shipment, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${shipment.name}</td>
+      <td>${shipment.address}</td>
+      <td>${shipment.city}</td>
+      <td>${shipment.tracking}</td>
+      <td>${shipment.company}</td>
+      <td>${shipment.representative}</td>
+      <td>${shipment.phone}</td>
+      <td>${shipment.price}</td>
+      <td>
+        <select class="status-select" data-index="${index}">
+          <option value="قيد الشحن" ${shipment.status === "قيد الشحن" ? "selected" : ""}>قيد الشحن</option>
+          <option value="قيد الإرجاع" ${shipment.status === "قيد الإرجاع" ? "selected" : ""}>قيد الإرجاع</option>
+          <option value="تم الإرجاع" ${shipment.status === "تم الإرجاع" ? "selected" : ""}>تم الإرجاع</option>
+          <option value="استلمت" ${shipment.status === "استلمت" ? "selected" : ""}>استلمت</option>
+          <option value="اتأجلت" ${shipment.status === "اتأجلت" ? "selected" : ""}>اتأجلت</option>
+          <option value="اتلغت" ${shipment.status === "اتلغت" ? "selected" : ""}>اتلغت</option>
+        </select>
+      </td>
+      <td>
+        <select class="payment-select" data-index="${index}">
+          <option value="لم يدفع" ${shipment.payment === "لم يدفع" ? "selected" : ""}>لم يدفع</option>
+          <option value="دفع" ${shipment.payment === "دفع" ? "selected" : ""}>دفع</option>
+        </select>
+      </td>
+      <td>${shipment.date}</td>
+      <td><button onclick="deleteShipment(${index})">حذف</button></td>
+    `;
+    tableBody.appendChild(tr);
+    companies.add(shipment.company);
   });
 
-  window.deleteShipment = function(index) {
-    const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    if (confirm("هل أنت متأكد من الحذف؟")) {
-      shipments.splice(index, 1);
+  document.querySelectorAll(".status-select").forEach(select => {
+    select.addEventListener("change", function() {
+      const index = this.getAttribute("data-index");
+      shipments[index].status = this.value;
       localStorage.setItem("shipments", JSON.stringify(shipments));
-      loadShipments();
-    }
-  };
-
-  searchBox.addEventListener("input", function () {
-    const term = searchBox.value.toLowerCase();
-    Array.from(tableBody.children).forEach(row => {
-      row.style.display = row.innerText.toLowerCase().includes(term) ? "" : "none";
     });
   });
 
-  filterCompany.addEventListener("change", function () {
-    const value = filterCompany.value;
-    Array.from(tableBody.children).forEach(row => {
-      row.style.display = value === "" || row.children[4].innerText === value ? "" : "none";
+  document.querySelectorAll(".payment-select").forEach(select => {
+    select.addEventListener("change", function() {
+      const index = this.getAttribute("data-index");
+      shipments[index].payment = this.value;
+      localStorage.setItem("shipments", JSON.stringify(shipments));
     });
   });
 
-  exportBtn.addEventListener("click", function () {
-    const rows = [["الاسم", "العنوان", "المدينة", "رقم التتبع", "الشركة", "المندوب", "رقم العميل", "السعر", "الحالة", "الملحوظة", "التاريخ"]];
-    const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    shipments.forEach(s => {
-      rows.push([s.name, s.address, s.city, s.tracking, s.company, s.representative, s.phone, s.price, s.status, s.note, s.date]);
-    });
-    const csvContent = rows.map(e => e.join(",")).join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "shipments.csv";
-    a.click();
-    URL.revokeObjectURL(url);
+  filterCompany.innerHTML = '<option value="">كل الشركات</option>';
+  companies.forEach(company => {
+    filterCompany.innerHTML += `<option value="${company}">${company}</option>`;
   });
+}
 
-  printBtn.addEventListener("click", function () {
-    const content = document.querySelector("#shipment-table").outerHTML;
-    const win = window.open("", "", "width=900,height=700");
-    win.document.write("<html><head><title>طباعة الكل</title></head><body>");
-    win.document.write(content);
-    win.document.write("</body></html>");
-    win.document.close();
-    win.print();
+function deleteShipment(index) {
+  const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
+  shipments.splice(index, 1);
+  localStorage.setItem("shipments", JSON.stringify(shipments));
+  loadShipments();
+}
+
+searchBox.addEventListener("input", function() {
+  const term = this.value.toLowerCase();
+  document.querySelectorAll("#shipment-table tbody tr").forEach(row => {
+    row.style.display = row.innerText.toLowerCase().includes(term) ? "" : "none";
   });
+});
 
-  window.printSingle = function(index) {
-    const shipments = JSON.parse(localStorage.getItem("shipments") || "[]");
-    const s = shipments[index];
-    const win = window.open("", "", "width=900,height=600");
-    win.document.write("<html><head><title>بوليصة الشحنة</title></head><body>");
-    win.document.write(`<h2>بوليصة شحن</h2>
-      <p><strong>الاسم:</strong> ${s.name}</p>
-      <p><strong>العنوان:</strong> ${s.address}</p>
-      <p><strong>المدينة:</strong> ${s.city}</p>
-      <p><strong>رقم التتبع:</strong> ${s.tracking}</p>
-      <p><strong>شركة الشحن:</strong> ${s.company}</p>
-      <p><strong>المندوب:</strong> ${s.representative}</p>
-      <p><strong>رقم العميل:</strong> ${s.phone}</p>
-      <p><strong>السعر:</strong> ${s.price}</p>
-      <p><strong>الحالة:</strong> ${s.status}</p>
-      <p><strong>الملحوظة:</strong> ${s.note}</p>
-      <p><strong>التاريخ:</strong> ${s.date}</p>`);
-    win.document.write("</body></html>");
-    win.document.close();
-    win.print();
-  };
-
-  window.login = function () {
-    const username = usernameInput.value;
-    const password = passwordInput.value;
-    if (username === "admin" && password === "1234") {
-      loginContainer.style.display = "none";
-      mainContainer.style.display = "block";
-      loadShipments();
-    } else {
-      alert("بيانات الدخول غير صحيحة.");
-    }
-  };
-
-  window.logout = function () {
-    loginContainer.style.display = "block";
-    mainContainer.style.display = "none";
-  };
+filterCompany.addEventListener("change", function() {
+  const company = this.value;
+  document.querySelectorAll("#shipment-table tbody tr").forEach(row => {
+    row.style.display = company === "" || row.cells[4].innerText === company ? "" : "none";
+  });
 });
