@@ -29,7 +29,15 @@
       <input type="text" id="representative" placeholder="اسم المندوب" required>
       <input type="text" id="phone" placeholder="رقم العميل" required>
       <input type="number" id="price" placeholder="سعر الشحنة" required>
-      <button type="submit">تسجيل وطباعة</button>
+      <select id="status">
+        <option value="قيد الشحن">قيد الشحن</option>
+        <option value="استلم">استلم</option>
+        <option value="تم الإلغاء">تم الإلغاء</option>
+        <option value="قيد الإرجاع">قيد الإرجاع</option>
+        <option value="تم الإرجاع">تم الإرجاع</option>
+      </select>
+      <input type="text" id="note" placeholder="ملاحظات (دفع شحن / علي التاجر)">
+      <button type="submit">تسجيل</button>
     </form>
 
     <div class="controls">
@@ -50,8 +58,10 @@
           <th>رقم العميل</th>
           <th>السعر</th>
           <th>الحالة</th>
-          <th>الدفع</th>
-          <th>التاريخ</th>
+          <th>الملاحظات</th>
+          <th>تاريخ</th>
+          <th>تعديل</th>
+          <th>طباعة بوليصة</th>
           <th>حذف</th>
         </tr>
       </thead>
