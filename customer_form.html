@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>إضافة شحنة - العملاء</title>
+    <link rel="stylesheet" href="customer_style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>إضافة شحنة جديدة</h2>
+        <form action="customer_add_shipment.php" method="POST">
+            <label>اسم المرسل إليه:</label>
+            <input type="text" name="receiver_name" required>
+
+            <label>المحافظة:</label>
+            <input type="text" name="province" required>
+
+            <label>العنوان:</label>
+            <textarea name="address" required></textarea>
+
+            <label>رقم الهاتف:</label>
+            <input type="text" name="receiver_phone" required>
+
+            <label>سعر الشحنة:</label>
+            <input type="number" name="shipment_price" required>
+
+            <label>اسم الراسل:</label>
+            <input type="text" name="sender_name" required>
+
+            <label>عنوان الراسل:</label>
+            <textarea name="sender_address" required></textarea>
+
+            <label>رقم هاتف الراسل:</label>
+            <input type="text" name="sender_phone" required>
+
+            <button type="submit">إضافة الشحنة</button>
+        </form>
+    </div>
+</body>
+              </html>
